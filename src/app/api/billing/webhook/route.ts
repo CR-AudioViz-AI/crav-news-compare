@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
               stripe_customer_id: session.customer as string,
               current_period_start: new Date().toISOString(),
               current_period_end: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-            });
+            } as any);
 
           if (error) {
             console.error('Error creating subscription:', error);
@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
             current_period_start: new Date(subscription.current_period_start * 1000).toISOString(),
             current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
             cancel_at_period_end: subscription.cancel_at_period_end,
-          })
+          } as any)
           .eq('stripe_subscription_id', subscription.id);
 
         if (error) {
@@ -87,7 +87,7 @@ export async function POST(request: NextRequest) {
           .from('news_subscriptions')
           .update({
             status: 'canceled',
-          })
+          } as any)
           .eq('stripe_subscription_id', subscription.id);
 
         if (error) {
@@ -107,7 +107,7 @@ export async function POST(request: NextRequest) {
               status: 'active',
               current_period_start: new Date(invoice.period_start * 1000).toISOString(),
               current_period_end: new Date(invoice.period_end * 1000).toISOString(),
-            })
+            } as any)
             .eq('stripe_subscription_id', invoice.subscription as string);
 
           if (error) {
@@ -125,7 +125,7 @@ export async function POST(request: NextRequest) {
             .from('news_subscriptions')
             .update({
               status: 'past_due',
-            })
+            } as any)
             .eq('stripe_subscription_id', invoice.subscription as string);
 
           if (error) {
