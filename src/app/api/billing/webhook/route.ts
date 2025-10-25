@@ -42,6 +42,7 @@ export async function POST(request: NextRequest) {
           }
 
           // Create or update subscription
+          // @ts-expect-error - Supabase types not generated for news_subscriptions table
           const { error } = await supabase
             .from('news_subscriptions')
             .upsert({
@@ -52,7 +53,7 @@ export async function POST(request: NextRequest) {
               stripe_customer_id: session.customer as string,
               current_period_start: new Date().toISOString(),
               current_period_end: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-            } as any);
+            });
 
           if (error) {
             console.error('Error creating subscription:', error);
@@ -64,6 +65,7 @@ export async function POST(request: NextRequest) {
       case 'customer.subscription.updated': {
         const subscription = event.data.object as Stripe.Subscription;
 
+        // @ts-expect-error - Supabase types not generated for news_subscriptions table
         const { error } = await supabase
           .from('news_subscriptions')
           .update({
@@ -71,7 +73,7 @@ export async function POST(request: NextRequest) {
             current_period_start: new Date(subscription.current_period_start * 1000).toISOString(),
             current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
             cancel_at_period_end: subscription.cancel_at_period_end,
-          } as any)
+          })
           .eq('stripe_subscription_id', subscription.id);
 
         if (error) {
@@ -83,11 +85,12 @@ export async function POST(request: NextRequest) {
       case 'customer.subscription.deleted': {
         const subscription = event.data.object as Stripe.Subscription;
 
+        // @ts-expect-error - Supabase types not generated for news_subscriptions table
         const { error } = await supabase
           .from('news_subscriptions')
           .update({
             status: 'canceled',
-          } as any)
+          })
           .eq('stripe_subscription_id', subscription.id);
 
         if (error) {
@@ -101,13 +104,14 @@ export async function POST(request: NextRequest) {
 
         if (invoice.subscription) {
           // Extend subscription period
+          // @ts-expect-error - Supabase types not generated for news_subscriptions table
           const { error } = await supabase
             .from('news_subscriptions')
             .update({
               status: 'active',
               current_period_start: new Date(invoice.period_start * 1000).toISOString(),
               current_period_end: new Date(invoice.period_end * 1000).toISOString(),
-            } as any)
+            })
             .eq('stripe_subscription_id', invoice.subscription as string);
 
           if (error) {
@@ -121,11 +125,12 @@ export async function POST(request: NextRequest) {
         const invoice = event.data.object as Stripe.Invoice;
 
         if (invoice.subscription) {
+          // @ts-expect-error - Supabase types not generated for news_subscriptions table
           const { error } = await supabase
             .from('news_subscriptions')
             .update({
               status: 'past_due',
-            } as any)
+            })
             .eq('stripe_subscription_id', invoice.subscription as string);
 
           if (error) {
