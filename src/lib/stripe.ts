@@ -15,7 +15,7 @@ if (!stripeSecretKey) {
 // ========================================
 
 export const stripe = new Stripe(stripeSecretKey, {
-  apiVersion: '2024-12-18.acacia',
+  apiVersion: '2025-02-24.acacia',
   typescript: true,
   appInfo: {
     name: 'CR AudioViz AI - News Compare',
@@ -252,3 +252,4 @@ export async function getCoupon(code: string): Promise<Stripe.Coupon | null> {
     return null;
   }
 }
+
