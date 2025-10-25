@@ -193,7 +193,7 @@ export async function checkAndConsumeQuota(
 
   // -1 means unlimited
   if (limit === -1) {
-    await supabase.rpc('bump_news_usage', {
+    await (supabase as any).rpc('bump_news_usage', {
       p_org: orgId,
       p_metric: metric,
       p_inc: amount,
@@ -221,7 +221,7 @@ export async function checkAndConsumeQuota(
   }
 
   // Consume quota
-  const { data: newCount } = await supabase.rpc('bump_news_usage', {
+  const { data: newCount } = await (supabase as any).rpc('bump_news_usage', {
     p_org: orgId,
     p_metric: metric,
     p_inc: amount,
@@ -241,7 +241,7 @@ export async function checkRateLimit(
 ): Promise<{ allowed: boolean; current: number; limit: number }> {
   const supabase = createServiceRoleClient();
 
-  const { data: count } = await supabase.rpc('bump_news_rate', {
+  const { data: count } = await (supabase as any).rpc('bump_news_rate', {
     p_key: key,
     p_bucket: bucket,
     p_inc: 1,
@@ -253,3 +253,4 @@ export async function checkRateLimit(
 
   return { allowed, current, limit };
 }
+
