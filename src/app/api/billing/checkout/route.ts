@@ -6,7 +6,7 @@ import { z } from 'zod';
 import { createCheckoutSession } from '@/lib/stripe';
 import { getCurrentUser, getUserOrg } from '@/lib/supabase';
 import { successResponse, unauthorizedResponse, errorResponse, getBaseUrl } from '@/lib/utils';
-import type { CheckoutRequest, CheckoutResponse } from '@/types';
+import type { CheckoutResponse } from '@/types';
 
 const checkoutSchema = z.object({
   plan_id: z.string().min(1),
