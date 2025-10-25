@@ -32,8 +32,8 @@ export async function POST(request: NextRequest) {
       orgId = membership?.org_id || null;
     }
 
-    // Insert event
-    const { error } = await supabase.from('news_events').insert({
+    // Insert event with type assertion for tables not yet in generated types
+    const { error } = await (supabase.from('news_events') as any).insert({
       org_id: orgId,
       user_id: user?.id || null,
       session_id,
@@ -56,4 +56,3 @@ export async function POST(request: NextRequest) {
     return errorResponse('Internal server error', 'INTERNAL_ERROR', undefined, 500);
   }
 }
-
