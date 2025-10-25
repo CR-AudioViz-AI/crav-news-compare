@@ -32,14 +32,16 @@ export async function POST(request: NextRequest) {
       orgId = membership?.org_id || null;
     }
 
-    // Insert event with type assertion for tables not yet in generated types
-    const { error } = await (supabase.from('news_events') as any).insert({
-      org_id: orgId,
-      user_id: user?.id || null,
-      session_id,
-      event_name,
-      properties: properties || {},
-    });
+    // Insert event - type assertion for tables not yet in generated types
+    const { error } = await supabase
+      .from('news_events')
+      .insert({
+        org_id: orgId,
+        user_id: user?.id || null,
+        session_id,
+        event_name,
+        properties: properties || {},
+      }) as any;
 
     if (error) {
       console.error('Error inserting telemetry event:', error);
