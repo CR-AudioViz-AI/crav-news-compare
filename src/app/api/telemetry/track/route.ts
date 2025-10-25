@@ -23,11 +23,11 @@ export async function POST(request: NextRequest) {
     // Get org_id if user is authenticated
     let orgId: string | null = null;
     if (user) {
-      const { data: membership } = await supabase
+      const { data: membership } = (await supabase
         .from('news_org_members')
         .select('org_id')
         .eq('user_id', user.id)
-        .single();
+        .single()) as { data: { org_id: string } | null; error: any };
 
       orgId = membership?.org_id || null;
     }
@@ -56,3 +56,4 @@ export async function POST(request: NextRequest) {
     return errorResponse('Internal server error', 'INTERNAL_ERROR', undefined, 500);
   }
 }
+
