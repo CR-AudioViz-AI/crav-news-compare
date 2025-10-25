@@ -214,7 +214,7 @@ export async function checkAndConsumeQuota(
     .gte('period_start', startOfMonth.toISOString())
     .single();
 
-  const current = usage?.count || 0;
+  const current = (usage as any)?.count || 0;
 
   if (current + amount > limit) {
     return { allowed: false, current, limit };
@@ -253,4 +253,5 @@ export async function checkRateLimit(
 
   return { allowed, current, limit };
 }
+
 
