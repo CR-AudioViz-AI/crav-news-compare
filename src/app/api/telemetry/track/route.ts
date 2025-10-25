@@ -8,14 +8,14 @@ import { successResponse, errorResponse } from '@/lib/utils';
 
 const trackEventSchema = z.object({
   session_id: z.string().min(1),
-  event_name: z.string().min(1),
-  properties: z.record(z.any()).optional(),
+  event_type: z.string().min(1),
+  event_data: z.record(z.any()).optional(),
 });
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { session_id, event_name, properties } = trackEventSchema.parse(body);
+    const { session_id, event_type, event_data } = trackEventSchema.parse(body);
 
     const user = await getCurrentUser();
     const supabase = createServiceRoleClient();
@@ -34,13 +34,13 @@ export async function POST(request: NextRequest) {
 
     // Insert event - type assertion for tables not yet in generated types
     const { error } = await supabase
-      .from('news_events')
+      .from('news_telemetry_events')
       .insert({
         org_id: orgId,
         user_id: user?.id || null,
         session_id,
-        event_name,
-        properties: properties || {},
+        event_type,
+        event_data: event_data || {},
       }) as any;
 
     if (error) {
@@ -58,3 +58,4 @@ export async function POST(request: NextRequest) {
     return errorResponse('Internal server error', 'INTERNAL_ERROR', undefined, 500);
   }
 }
+
