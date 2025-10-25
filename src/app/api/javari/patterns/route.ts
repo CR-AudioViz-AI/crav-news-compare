@@ -20,10 +20,11 @@ export async function GET(request: NextRequest) {
     const supabase = createServiceRoleClient();
 
     // Call the database function to get pattern data
+    // Type assertion needed for custom RPC functions
     const { data: patternData, error } = await supabase.rpc('get_news_patterns', {
       p_start_date: startDate,
       p_end_date: endDate,
-    });
+    } as any);
 
     if (error) {
       console.error('Error fetching patterns:', error);
